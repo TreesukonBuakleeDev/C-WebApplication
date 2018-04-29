@@ -1,0 +1,97 @@
+﻿@{
+    ViewBag.Title = "MaterialPreparations";
+    Layout = "~/Views/Shared/Monitor.cshtml";
+}
+
+<h3 class="sub-header">Material Preparation Process</h3>
+<div class="panel-body">
+    <table class="col-md-10">
+        <tbody>
+            <tr>
+                <td class="sum-head">Use of Cassava Root</td>
+                <td id="usedCSR" class="sum-value"></td>
+                <td class="sum-value">Ton</td>
+            </tr>
+            <tr>
+                <td class="sum-head">Generation of Peel</td>
+                <td id="PeelGen" class="sum-value"></td>
+                <td class="sum-value">Ton</td>
+            </tr>
+            <tr>
+                <td class="sum-head">Generation of Sand</td>
+                <td id="SandGen" class="sum-value"></td>
+                <td class="sum-value">Ton</td>
+            </tr>
+            <tr>
+                <td class="sum-head">Generation of Wastewater</td>
+                <td id="WAGen" class="sum-value"></td>
+                <td class="sum-value">m^3</td>
+            </tr>
+            <tr>
+                <td class="sum-head">Starch Content in Wastewater</td>
+                <td id="StarchInWA" class="sum-value"></td>
+                <td class="sum-value">%</td>
+            </tr>
+            <tr>
+                <td class="sum-head">Recycle Water Consumption</td>
+                <td id="ReWA" class="sum-value"></td>
+                <td class="sum-value">m^3</td>
+            </tr>           
+            
+        </tbody>
+    </table>
+    
+</div>
+<script>
+    $(document).ready(function () {
+
+        var usedCSR = 0, PeelGen = 0, SandGen = 0; WAGen = 0, StarchInWA = 0, ReWA = 0;
+        get();
+        setInterval(function () {
+            get();
+
+        }, 60000);
+        function get() {
+
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Index/DataMaterialPreparation",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                //data: { valueS: "Hello" },
+                success: function (response) {
+                    $.each(response, function (i, item) {
+
+                        if (item.parameter == "CIFU01") {
+                            usedCSR += parseFloat(item.value) / 12;
+                        }
+                        else if (item.parameter == "SOFU01") {
+                            PeelGen += parseFloat(item.value) / 12 * 0.12 / 1.86;
+                            SandGen += parseFloat(item.value) / 12 * 1.74 / 1.86;
+                        }
+                        else if (item.parameter == "W2FEXU02") {
+                            WAGen += parseFloat(item.value) / 12;
+                            StarchInWA += parseFloat(item.value) / 12 * 0.09 / 82.874;
+                        }
+                        else if (item.parameter == "WAFU02") {
+                            ReWA += parseFloat(item.value) / 12;
+                            
+                        }
+                       
+                    });
+
+                    $("#usedCSR").html(usedCSR.toFixed(2));
+                    $("#PeelGen").html(PeelGen.toFixed(2));
+                    $("#SandGen").html(SandGen.toFixed(2));
+                    $("#WAGen").html(WAGen.toFixed(2));
+                    $("#StarchInWA").html(StarchInWA.toFixed(2));
+                    $("#ReWA").html(ReWA.toFixed(2));
+                }
+            });
+
+
+        }
+    });
+</script>

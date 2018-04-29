@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="FinalProjectModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CurrentData">
+          <Key>
+            <PropertyRef Name="parameter" />
+          </Key>
+          <Property Name="parameter" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="value" Type="float" />
+          <Property Name="gettime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="HistoryData">
+          <Key>
+            <PropertyRef Name="parameter" />
+            <PropertyRef Name="gettime" />
+          </Key>
+          <Property Name="parameter" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="gettime" Type="datetime" Nullable="false" />
+          <Property Name="value" Type="float" />
+        </EntityType>
+        <EntityType Name="StarchQuality">
+          <Key>
+            <PropertyRef Name="AddTime" />
+          </Key>
+          <Property Name="AddTime" Type="datetime" Nullable="false" />
+          <Property Name="PH" Type="float" />
+          <Property Name="Whiteness" Type="float" />
+          <Property Name="Viscosity" Type="float" />
+          <Property Name="SulfurResidue" Type="float" />
+        </EntityType>
+        <EntityContainer Name="FinalProjectModelStoreContainer">
+          <EntitySet Name="CurrentData" EntityType="Self.CurrentData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HistoryData" EntityType="Self.HistoryData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StarchQuality" EntityType="Self.StarchQuality" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FinalProjectModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CurrentData">
+          <Key>
+            <PropertyRef Name="parameter" />
+          </Key>
+          <Property Name="parameter" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="value" Type="Double" />
+          <Property Name="gettime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="HistoryData">
+          <Key>
+            <PropertyRef Name="parameter" />
+            <PropertyRef Name="gettime" />
+          </Key>
+          <Property Name="parameter" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="gettime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="value" Type="Double" />
+        </EntityType>
+        <EntityType Name="StarchQuality">
+          <Key>
+            <PropertyRef Name="AddTime" />
+          </Key>
+          <Property Name="AddTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="PH" Type="Double" />
+          <Property Name="Whiteness" Type="Double" />
+          <Property Name="Viscosity" Type="Double" />
+          <Property Name="SulfurResidue" Type="Double" />
+        </EntityType>
+        <EntityContainer Name="FinalProjectEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CurrentDatas" EntityType="Self.CurrentData" />
+          <EntitySet Name="HistoryDatas" EntityType="Self.HistoryData" />
+          <EntitySet Name="StarchQualities" EntityType="Self.StarchQuality" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FinalProjectModelStoreContainer" CdmEntityContainer="FinalProjectEntities">
+          <EntitySetMapping Name="CurrentDatas">
+            <EntityTypeMapping TypeName="FinalProjectModel.CurrentData">
+              <MappingFragment StoreEntitySet="CurrentData">
+                <ScalarProperty Name="parameter" ColumnName="parameter" />
+                <ScalarProperty Name="value" ColumnName="value" />
+                <ScalarProperty Name="gettime" ColumnName="gettime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HistoryDatas">
+            <EntityTypeMapping TypeName="FinalProjectModel.HistoryData">
+              <MappingFragment StoreEntitySet="HistoryData">
+                <ScalarProperty Name="parameter" ColumnName="parameter" />
+                <ScalarProperty Name="gettime" ColumnName="gettime" />
+                <ScalarProperty Name="value" ColumnName="value" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StarchQualities">
+            <EntityTypeMapping TypeName="FinalProjectModel.StarchQuality">
+              <MappingFragment StoreEntitySet="StarchQuality">
+                <ScalarProperty Name="AddTime" ColumnName="AddTime" />
+                <ScalarProperty Name="PH" ColumnName="PH" />
+                <ScalarProperty Name="Whiteness" ColumnName="Whiteness" />
+                <ScalarProperty Name="Viscosity" ColumnName="Viscosity" />
+                <ScalarProperty Name="SulfurResidue" ColumnName="SulfurResidue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

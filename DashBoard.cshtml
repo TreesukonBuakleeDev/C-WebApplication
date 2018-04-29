@@ -1,0 +1,209 @@
+﻿@{
+    ViewBag.Title = "DashBoard";
+    Layout = "~/Views/Shared/_LayOut.cshtml";
+}
+<div class="container">
+    <h6 class="text-right"> </h6>
+    <!-- Monitoring -->
+    <div class="col-md-7">
+        <div class="col-md-6">
+            <div class="panel starch-led">
+                <div class="panel-title led-head-starch">Starch Produced (ton)</div>
+                <div class="panel-body" style="display:inline">
+                    <div class="col-md-9"><p id="StarchProduced"class="led-body-starch">00.0</p></div>
+                    <div class="col-md-3"><p class="led-unit">Ton</p></div>
+
+                </div>
+            </div>
+            <div class="panel yield-led">
+                <div class="panel-title led-head-starch">Yield (%)</div>
+                <div class="panel-body" style="display:inline">
+                    <div class="col-md-9"><p id="Yield" class="led-body-starch">0</p></div>
+                    <div class="col-md-3"><p class="led-unit">% </p></div>
+
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-md-6">
+            <div class="panel used-ftr-led">
+                <div class="panel-title led-head-starch">Used Cassava Root</div>
+                <div class="panel-body" style="display:inline">
+                    <div class="col-md-9"><p id="usedCSR" class="led-body-starch">00.0</p></div>
+                    <div class="col-md-3"><p class="led-unit">Ton</p></div>
+
+                </div>
+            </div>
+            <div class="panel used-ftr-led">
+                <div class="panel-title led-head-starch">Expected Starch in Cassava Root</div>
+                <div class="panel-body" style="display:inline">
+                    <div class="col-md-9"><p id="StarchInCSR" class="led-body-starch">00.0</p></div>
+                    <div class="col-md-3"><p class="led-unit">Ton</p></div>
+
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <p id="gettime" class="text-right"></p>
+            <p id="getdate" class="text-right"></p>
+        </div>
+
+    </div>
+
+
+        <div class="col-md-5">
+            <div class="panel">
+                <button type="button" class="btn btn-warning per-monitor" onclick="location.href = '@Url.Action("MaterialPreparations", "Index")'">Performance Monitoring  <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+            </div>
+
+            <div class="col-md-6 pad5">
+                <div class="standard ">
+                    <div class="led-head-starch ">PH</div>
+                    <p style="font-size:20px; padding:10px; text-align:right" id="PH"></p>
+                </div>
+            </div>
+            <div class="col-md-6 pad5">
+                <div class="standard">
+                    <div class="led-head-starch">Viscosity</div>
+                    <p style="font-size:20px; padding:10px; text-align:right" id="Viscosity"></p>
+                </div>
+            </div>
+            <div class="col-md-6 pad5">
+                <div class="standard">
+                    <div class="led-head-starch">Whiteness</div>
+                    <p style="font-size:20px; padding:10px; text-align:right" id="Whiteness"></p>
+                </div>
+            </div>
+            <div class="col-md-6 pad5">
+                <div class="standard">
+                    <div class=" led-head-starch">Sulfur Residue</div>
+                    <p style="font-size:20px; padding:10px; text-align:right" id="SulfurResidue"></p>
+                </div>
+            </div>
+
+            <div class="col-md-12 panel loss-led">
+                <br />
+                <div class="col-md-12 "><p class="text-led">Loss at Waste Water</p></div>
+                <div class="panel-body" style="display:inline">
+                    <div class="col-md-4 col-md-offset-5"><p id="StarchLossWA" class="text-led-value">00.0</p></div>
+                    <div class="col-md-3"><p class="text-led-unit">Ton</p></div>
+                </div>
+                <div class="col-md-12"><p class="text-led">Loss at Pulp/Peel</p></div>
+                <div class="panel-body" style="display:inline">
+                    <div class="col-md-4 col-md-offset-5"><p id="StarchLossP" class="text-led-value">00.0</p></div>
+                    <div class="col-md-3"><p class="text-led-unit">Ton</p></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+       
+        //variable for computing data
+        var StarchOut=0, usedCSR=0, Yield=0, StarchInCSR=0, StarchLossWA=0, StarchLossP=0;
+        //variable use to show time
+        var date = new Date();
+        $("#getdate").html(date.toLocaleDateString());
+        $("#gettime").html(date.toLocaleTimeString());
+
+        get();      
+        
+        //set variable to 0 to compute all over again
+        setInterval(function () {
+            StarchOut=0, usedCSR=0, Yield=0, StarchInCSR=0, StarchLossWA=0, StarchLossP=0;
+            get();
+            
+        }, 60000);
+        //set time to update every 1 second
+        setInterval(function () {
+            var date = new Date();
+            $("#getdate").html(date.toLocaleDateString());
+            $("#gettime").html(date.toLocaleTimeString());
+        }, 1000);
+
+        //function use to compute and show data
+        function get() {                      
+
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Index/DataDashboardHistory",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                success: function (response) {     
+                    //temp variable use to compute cassava root used amount and amount of starch in used cassava root
+                    var used = 0;                    
+                    
+                    $.each(response, function (i, item) {
+                        //compute produced starch
+                        if(item.parameter == "CPFU29")
+                        {
+                            StarchOut +=  parseFloat(item.value)/60;
+                        }  
+                        //compute cassava root used amount and amount of starch in used cassava root
+                        else if(item.parameter == "CIFU01")
+                        {  
+                            used =  parseFloat(item.value)/60;
+                            usedCSR +=  used;                         
+                            StarchInCSR += (used*0.239);
+                            
+                        }  
+                        //amount of starch loss in waste water
+                        else if(item.parameter == "WAFU02")
+                        {
+                            StarchLossWA += parseFloat(item.value) / 60 * 0.09 / 82.874;
+                        }
+                        //amount of starch loss in waste water
+                        else if(item.parameter == "POFU12")
+                        {
+                            StarchLossP +=  parseFloat(item.value) / 60 * 0.41/25.92;
+                        }
+                        
+                    });                    
+                    //compute yield
+                    Yield = StarchOut/StarchInCSR*100;
+
+                    //write data to dashboard
+                    $("#StarchProduced").html(StarchOut.toFixed(2));
+                    $("#usedCSR").html(usedCSR.toFixed(2));
+                    $("#StarchInCSR").html(StarchInCSR.toFixed(2));
+                    $("#Yield").html(Yield.toFixed(2));
+                    $("#StarchLossWA").html(StarchLossWA.toFixed(2));
+                    $("#StarchLossP").html(StarchLossP.toFixed(2));
+                }
+            });
+            //use to show latest starch quality
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/FillingForm/GetStarchQuality",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                success: function (response) {
+                    
+                    $.each(response, function (i, item) {
+
+                        var GETPH = item.PH;
+                        var GETWhiteness = item.Whiteness;
+                        var GETViscosity = item.Viscosity;
+                        var GETSulfurResidue = item.SulfurResidue;
+                        //write data to dashboard
+                        $("#PH").html(GETPH.toFixed(1));
+                        $("#Whiteness").html(GETWhiteness.toFixed(1));
+                        $("#Viscosity").html(GETViscosity.toFixed(1));
+                        $("#SulfurResidue").html(GETSulfurResidue.toFixed(1));
+                    });
+
+                }
+            });
+                    
+        }
+    });
+   
+</script>
+

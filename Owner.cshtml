@@ -1,0 +1,330 @@
+﻿@{
+    ViewBag.Title = "Owner";
+    Layout = "~/Views/Shared/_LayOut.cshtml";
+}
+<link href="~/Contents/Jquery-ui/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Contents/Jquery-ui/jquery-ui.js"></script>
+<link href="~/Contents/Jquery-ui/jquery-ui.css" rel="stylesheet" />
+
+<link href="~/Contents/Jquery-ui/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Contents/Jquery-ui/jquery-ui.js"></script>
+<link href="~/Contents/Jquery-ui/jquery-ui.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="container main">
+        <div class="">
+            <p style="display:inline" class="text-right">Date: <input type="text" id="datepicker"></p>
+            <button id="viewdate" class="btn btn-default" type="button">Select Date</button>
+            @*<button style="display:inline" id="viewReport" type="button" data-toggle="collapse" data-target="#CollapseTable" aria-expanded="false" aria-controls="CollapseTable" class="btn btn-default" aria-label="Left Align">
+                    <p class="butt">View Report</p>
+                </button>*@
+        </div>
+        <br />
+        <br />
+        <div id="CollapseTable" class="">
+            <h1 class="page-header">Report <small>(Qwner)</small></h1>
+            <!-- Summary -->
+            <div class="col-md-5">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">SUMMARY</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="">
+                            <tbody>
+                                <tr>
+                                    <td class="sum-head">Used of CSR</td>
+                                    <td id="USEDCSRsum" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Starch in CSR</td>
+                                    <td id="SINsum" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Starch Produced</td>
+                                    <td id="SOUTsum" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Starch Yield</td>
+                                    <td id="SYsum" class="sum-value"></td>
+                                    <td class="sum-unit">%</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Capacity</td>
+                                    <td id="SCsum" class="sum-value">70</td>
+                                    <td class="sum-unit">%</td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="col-md-offset-5 panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Material</th>
+                            <th>Consumption Amount</th>
+                            <th>Unit/Ton-CSR</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Electricity</td>
+                            <td id="elecConsumption">240.81</td>
+                            <td>kWh</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Fresh Water</td>
+                            <td id="waterConsumption"></td>
+                            <td>m^3</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Sulfur</td>
+                            <td id="sulfurConsumption"></td>
+                            <td>Ton</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- Production -->
+            <h3 class="sub-header">Production</h3>
+
+            <!-- Starch Production -->
+            <div class="col-md-12">
+                <div class="col-md-8 panel-body">
+                    <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+
+                </div>
+                <div class="col-md-4 panel-body">
+                    <table class="">
+                        <tbody>
+                            <tr>
+                                <td class="sum-head">Starch in amount</td>
+                                <td id="SPstarchin" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                            <tr>
+                                <td class="sum-head">Produced amount</td>
+                                <td id="SPstarchout" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                            <tr>
+                                <td class="sum-head">Loss at wastewater</td>
+                                <td id="SPstarchlossWA" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                            <tr>
+                                <td class="sum-head">Loss at pulp</td>
+                                <td id="SPstarchlossP" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                            <tr>
+                                <td class="sum-head">Low quality starch</td>
+                                <td id="SPstarchlowquality" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!--Starch Quality-->
+            <h3 class="sub-header">Starch Quality</h3>
+            <div class="panel-body">
+                <table id="QualityTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>PH</th>
+                            <th>Viscosity</th>
+                            <th>Whiteness</th>
+                            <th>Sulfur Residue</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+        //Variables for computing
+        var StarchOut = 0, usedCSR = 0, Yield = 0, StarchInCSR = 0, StarchLossWA = 0, StarchLossP = 0, used = 0, WAGen = 0, ReWA = 0, PeelGen = 0, SandGen = 0, sulfurConsumption = 0, waterConsumption = 0, LowQualityStarch=0;
+        $("#viewdate").click(function () {
+        
+            var getdate = $("#datepicker").val();
+            var d = new Date(getdate);
+            var date = d.getDate()
+            var month = d.getMonth();
+            var year = d.getFullYear();
+
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Report/ReportOwnerData",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                data: { date: date, month: month + 1, year: year },
+                success: function (response) {
+                    countdata = 0;
+                    $.each(response, function (i, item) {
+
+                        //Variables for computing Starch amounts and Material Preparation
+
+                        if (item.parameter == "CIFU01") {
+                            used = parseFloat(item.value) / 60;
+                            usedCSR += used;
+                            StarchInCSR += (used * 0.239);
+                        }
+                        else if (item.parameter == "WAFU02") {
+                            WAGen += parseFloat(item.value) / 60;
+                            StarchLossWA += parseFloat(item.value) / 12 * 0.09 / 82.874;
+                        }
+                        else if (item.parameter == "W2FEXU02") {
+                            ReWA += parseFloat(item.value) / 60;
+                        }
+                        else if (item.parameter == "SOFU01") {
+                            PeelGen += parseFloat(item.value) / 60 * 0.12 / 1.86;
+                            SandGen += parseFloat(item.value) / 60 * 1.74 / 1.86;
+                        }
+                        else if (item.parameter == "CPFU29") {
+                            StarchOut += parseFloat(item.value) / 60;
+                        }
+                        else if (item.parameter == "CPOFU29") {
+                            LowQualityStarch += parseFloat(item.value) / 60;
+                        }
+                        else if (item.parameter == "POFU12") {
+                            StarchLossP += parseFloat(item.value) / 60 * 0.41 / 25.92;
+                        }
+
+                        //Variable for computing Consumptions
+                        else if (item.parameter == "SUFU8") {
+                            sulfurConsumption += parseFloat(item.value/60);
+                        }
+                        else if (item.parameter == "WFU12" || item.parameter == "PV(FIC-152)" || item.parameter == "WFU22" || item.parameter == "WIFU20") {
+                            waterConsumption += parseFloat(item.value/60);
+                        }
+                    });
+
+                    Yield = StarchOut / StarchInCSR * 100;
+
+                    //Adding data for computing summary 
+                    $("#USEDCSRsum").html(usedCSR.toFixed(2));
+                    $("#SINsum").html(StarchInCSR.toFixed(2));
+                    $("#SOUTsum").html(StarchOut.toFixed(2));
+                    $("#SYsum").html(Yield.toFixed(2));
+
+                    //Adding data for Production >> Material Consumption
+                    $("#sulfurConsumption").html(sulfurConsumption.toFixed(2));
+                    $("#waterConsumption").html(waterConsumption.toFixed(2));
+
+                    //Adding data for Production >> Starch production
+                    $("#SPstarchin").html(StarchInCSR.toFixed(2));
+                    $("#SPstarchout").html(StarchOut.toFixed(2));
+                    $("#SPstarchlossWA").html(StarchLossWA.toFixed(2));
+                    $("#SPstarchlossP").html(StarchLossP.toFixed(2));
+                    $("#SPstarchlowquality").html(LowQualityStarch.toFixed(2));
+
+                    //Adding data for Production Monitoring  >> Material Preparation
+                    $("#USEDCSRmp").html(usedCSR.toFixed(2));
+                    $("#WAGen").html(WAGen.toFixed(2));
+                    $("#StarchLossWA").html(StarchLossWA.toFixed(2));
+                    $("#ReWA").html(ReWA.toFixed(2));
+                    $("#PeelGen").html(PeelGen.toFixed(2));
+                    $("#SandGen").html(SandGen.toFixed(2));
+
+                    $(function () {
+                        $('#container').highcharts({
+                            chart: {
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false
+                            },
+                            title: {
+                                text: 'Starch Production'
+                            },
+                            tooltip: {
+                                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                        style: {
+                                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                        }
+                                    }
+                                }
+                            },
+                            series: [{
+                                type: 'pie',
+                                name: 'Percentof Starch',
+                                data: [
+                                    ['Produced', StarchOut],
+                                    ['Loss at Waste Water', StarchLossWA],
+                                    ['Loss at Pulp', StarchLossP],
+                                    ['Low quality', 6.2]
+                                ]
+                            }]
+                        });
+                    });
+                }
+            });
+
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Report/GetStarchQuality",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                data: { date: date, month: month + 1, year: year },
+                success: function (response) {
+                    $("#QualityTable tbody tr").remove();
+                    $.each(response, function (i, item) {
+
+                        var Getdate = ToJavaScriptDate(item.AddTime);
+                        var GETPH = item.PH;
+                        var GETWhiteness = item.Whiteness;
+                        var GETViscosity = item.Viscosity;
+                        var GETSulfurResidue = item.SulfurResidue;
+                        $('#QualityTable tbody:first').append('<tr><td>' + Getdate + '</td><td>' + GETPH + '</td><td>' + GETWhiteness + '</td><td>' + GETViscosity + '</td><td>' + GETSulfurResidue + '</td></tr>');
+
+                    });
+
+                }
+            });
+
+        });
+        function ToJavaScriptDate(value) {
+            var pattern = /Date\(([^)]+)\)/;
+            var results = pattern.exec(value);
+            var dt = new Date(parseFloat(results[1]));
+            return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear() + " " + dt.getHours() + ":" + dt.getMinutes();
+        }
+    });
+</script>

@@ -1,0 +1,161 @@
+﻿@{
+    ViewBag.Title = "StarchQualityForm";
+    Layout = "~/Views/Shared/FormShared.cshtml";
+}
+<div class="container">
+    <p style="text-align:left; display:block" class="title-form">Starch Quality Filling Form</p>
+    <div class="col-md-5">
+        <div class="panel-body">
+            <div class="row">
+                <div class="form-group">
+                    <label class="lableText" for="PH">PH</label>
+                    <input type="text" class="form-control" id="PH" placeholder="Enter PH of Starch" required>
+                </div>
+                <div class="form-group">
+                    <label class="lableText " for="Whiteness">Whiteness</label>
+                    <input type="text" class="form-control" id="Whiteness" placeholder="Enter Whiteness of Starch" required>
+                </div>
+                <div class="form-group">
+                    <label class="lableText " for="Viscosity">Viscosity</label>
+                    <input type="text" class="form-control" id="Viscosity" placeholder="Enter Viscosity of Starch" required>
+                </div>
+                <div class="form-group">
+                    <label class="lableText " for="SulfurResidue">Sulfur Residue</label>
+                    <input type="text" class="form-control" id="SulfurResidue" placeholder="Enter Sulfur Residue of Starch" required>
+                </div>
+                <div class="button-form ">
+                    <button id="save" type="button" class="btn btn-glyphicon" aria-label="Left Align">
+                        <p class="butt">SAVE <span class="glyphicon glyphicon-save" aria-hidden="true"></span></p>
+
+                    </button>
+                    <button type="button" class="btn btn-glyphicon" aria-label="Left Align">
+                        <p class="butt">EDIT <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></p>
+                    </button>
+                    <button type="button" class="btn btn-glyphicon" aria-label="Left Align">
+                        <p class="butt">Delete <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></p>
+                    </button>
+                    <button id="ViewTable" type="button" data-toggle="collapse" data-target="#CollapseTable" aria-expanded="false" aria-controls="CollapseTable" class="btn btn-glyphicon" aria-label="Left Align">
+                        <p class="butt">View</p>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>       
+   
+    <div id="CollapseTable" class="collapse col-md-7">
+        <table id="Table"class=" table table-bordered table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th class="col-md-2">Date Time</th>
+                    <th class="col-md-2">PH</th>
+                    <th class="col-md-2">Whiteness</th>
+                    <th class="col-md-2">Viscosity</th>
+                    <th class="col-md-2">SulfurResidue</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var PH = '';
+        var Whiteness = '';
+        var Viscosity = '';
+        var SulfurResidue = '';
+
+        //$('#PH').val() = '';
+        //$('#Whiteness').val() = '';
+        //$('#Viscosity').val() = '';
+        //$('#SulfurResidue').val() = '';
+
+        run();
+        
+
+        $("#save").click(function () {
+
+            PH = $('#PH').val();
+            Whiteness = $('#Whiteness').val();
+            Viscosity = $('#Viscosity').val();
+            SulfurResidue = $('#SulfurResidue').val();
+            alert(PH);
+
+            if (PH == null || PH == '' ) {
+                alert("Please input PH values");
+            }
+            else if (Whiteness == null || Whiteness == '') {
+                alert("Please input Whiteness values");
+            }
+            else if (Viscosity == null || Viscosity == '') {
+                alert("Please input Viscosity values");
+            }
+            else if (SulfurResidue == null || SulfurResidue == '') {
+                alert("Please input SulfurResidue values");
+            }
+            else {
+                PH = parseFloat(PH).toFixed(2);
+                Whiteness = parseFloat(Whiteness).toFixed(2);
+                Viscosity = parseFloat(Viscosity).toFixed(2);
+                SulfurResidue = parseFloat(SulfurResidue).toFixed(2);
+
+                $.ajax({
+                    async: true,
+                    cach: false,
+                    url: "/FillingForm/AddStarchQuality",
+                    Type: "GET",
+                    datatype: "json",
+                    //contentType: "applicationType/json",
+                    data: { value1: PH, value2: Whiteness, value3: Viscosity, value4: SulfurResidue },
+                    success: function (response) {
+                        run();
+
+                    }
+                });
+            }
+
+        });
+
+        function run() {
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/FillingForm/GetStarchQuality",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                //data: { value1: PH, value2: Whiteness, value3: Viscosity, value4: SulfurResidue },
+                success: function (response) {
+                    $("#Table tbody tr").remove();
+                    $.each(response, function (i, item) {
+
+                        var Getdate = ToJavaScriptDate(item.AddTime);
+                        var GETPH = item.PH;
+                        var GETWhiteness = item.Whiteness;
+                        var GETViscosity = item.Viscosity;
+                        var GETSulfurResidue = item.SulfurResidue;
+
+                        $('#Table tbody:first').append('<tr><td>' + Getdate + '</td><td>' + GETPH + '</td><td>' + GETWhiteness + '</td><td>' + GETViscosity + '</td><td>' + GETSulfurResidue + '</td></tr>');
+
+                    });
+
+                }
+            });
+        }
+        function ToJavaScriptDate(value) {
+            var pattern = /Date\(([^)]+)\)/;
+            var results = pattern.exec(value);
+            var dt = new Date(parseFloat(results[1]));
+            return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear()+ " " +dt.getHours()+ ":"+dt.getMinutes();
+        }
+
+
+    });
+        
+</script>
+
+    
+
+
+

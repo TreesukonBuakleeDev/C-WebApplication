@@ -1,0 +1,812 @@
+﻿@{
+    ViewBag.Title = "PlantManager";
+    Layout = "~/Views/Shared/_LayOut.cshtml";
+}
+<link href="~/Contents/Jquery-ui/jquery-ui.theme.css" rel="stylesheet" />
+<script src="~/Contents/Jquery-ui/jquery-ui.js"></script>
+<link href="~/Contents/Jquery-ui/jquery-ui.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="container main">
+        <div class="">
+            <p style="display:inline" class="text-right">Date: <input type="text" id="datepicker"></p>
+            <button id="viewdate" class="btn btn-default" type="button">Select Date</button>
+            @*<button style="display:inline" id="viewReport" type="button" data-toggle="collapse" data-target="#CollapseTable" aria-expanded="false" aria-controls="CollapseTable" class="btn btn-default" aria-label="Left Align">
+                    <p class="butt">View Report</p>
+                </button>*@
+        </div>
+        <br />
+        <br />
+        <div id="CollapseTable" class="">
+            <h1 class="page-header">Report <small>(Plant Manager)</small></h1>
+            <!-- Summary -->
+            <div class="col-md-5">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">SUMMARY</h3>
+                    </div>
+                    <div class="panel-body">
+                        <table class="">
+                            <tbody>
+                                <tr>
+                                    <td class="sum-head">Used of CSR</td>
+                                    <td id="USEDCSRsum" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Starch in CSR</td>
+                                    <td id="SINsum" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Starch Produced</td>
+                                    <td id="SOUTsum" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Starch Yield</td>
+                                    <td id="SYsum" class="sum-value"></td>
+                                    <td class="sum-unit">%</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Capacity</td>
+                                    <td id="SCsum" class="sum-value">70</td>
+                                    <td class="sum-unit">%</td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="col-md-offset-5 panel-body">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Material</th>
+                            <th>Consumption Amount</th>
+                            <th>Unit/Ton-CSR</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>Electricity</td>
+                            <td id="elecConsumption">240.81</td>
+                            <td>kWh</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Fresh Water</td>
+                            <td id="waterConsumption"></td>
+                            <td>m^3</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Sulfur</td>
+                            <td id="sulfurConsumption"></td>
+                            <td>Ton</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- Production -->
+            <h3 class="sub-header">Production</h3>
+
+            <!-- Starch Production -->
+            <div class="col-md-12">
+                <div class="col-md-8 panel-body">
+                    <div id="container" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+
+                </div>
+                <div class="col-md-4 panel-body">
+                    <table class="">
+                        <tbody>
+                            <tr>
+                                <td class="sum-head">Starch in amount</td>
+                                <td id="SPstarchin" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                            <tr>
+                                <td class="sum-head">Produced amount</td>
+                                <td id="SPstarchout" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                            <tr>
+                                <td class="sum-head">Loss at wastewater</td>
+                                <td id="SPstarchlossWA" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                            <tr>
+                                <td class="sum-head">Loss at pulp</td>
+                                <td id="SPstarchlossP" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                            <tr>
+                                <td class="sum-head">Low quality starch</td>
+                                <td id="SPstarchlowquality" class="sum-value"></td>
+                                <td class="sum-unit">Ton</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!--Starch Quality-->
+            <h3 class="sub-header">Starch Quality</h3>
+            <div class="panel-body">
+                <table id="QualityTable" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>PH</th>
+                            <th>Viscosity</th>
+                            <th>Whiteness</th>
+                            <th>Sulfur Residue</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <!--Monitoring-->
+        <h3 class="sub-header">Production Monitoring</h3>
+
+        <h4>Material Preparation Process</h4>
+        <div class="panel-body">
+            <table class="col-md-6">
+                <tbody>
+                    <tr>
+                        <td class=" sum-head">Use of Cassava Root</td>
+                        <td id="USEDCSRmp" class=" sum-value"></td>
+                        <td class="sum-value">Ton</td>
+                    </tr>
+                    <tr>
+                        <td class="sum-head">Generation of Peel</td>
+                        <td id="PeelGen" class="sum-value"></td>
+                        <td class="sum-value">Ton</td>
+                    </tr>
+                    <tr>
+                        <td class="sum-head">Generation of Sand</td>
+                        <td id="SandGen" class="sum-value"></td>
+                        <td class="sum-value">Ton</td>
+                    </tr>
+                    <tr>
+                        <td class="sum-head">Generation of Wastewater</td>
+                        <td id="WAGen" class="sum-value"></td>
+                        <td class="sum-value">m^3</td>
+                    </tr>
+                    <tr>
+                        <td class="sum-head">Starch Loss in Wastewater</td>
+                        <td id="StarchLossWA" class="sum-value"></td>
+                        <td class="sum-value">Ton</td>
+                    </tr>
+                    <tr>
+                        <td class="sum-head">Recycle Water Consumption</td>
+                        <td id="ReWA" class="sum-value"></td>
+                        <td class="sum-value">m^3</td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <h4>Extraction through Drying Process</h4>
+        <div class="panel-body">
+            <div class="col-md-8 table-responsive">
+                <table class="table table-hover table-condensed table-bordered">
+                    <thead>
+                        <tr class="success">
+                            <th class="col-md-3">Unit</th>
+                            <th class="col-md-3">Capacity(%)</th>
+                            <th class="col-md-3">Starch Efficiency(%)</th>
+                            <th class="col-md-3">Pulp Extraction Efficiency(%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Coarse Extractor</td>
+                            <td id="CCEX"></td>
+                            <td id="SEFCEX"></td>
+                            <td id="PEFCEX"></td>
+                        </tr>
+                        <tr>
+                            <td>Fine Extractor #1</td>
+                            <td id="CFEX1"></td>
+                            <td id="SEFFEX1"></td>
+                            <td id="PEFFEX1"></td>
+                        </tr>
+                        <tr>
+                            <td>Seperator #1</td>
+                            <td id="CSEP1"></td>
+                            <td id="SEFSEP1"></td>
+                            <td id="PEFSEP1"></td>
+                        </tr>
+                        <tr>
+                            <td>Fine Extractor #2</td>
+                            <td id="CFEX2"></td>
+                            <td id="SEFFEX2"></td>
+                            <td id="PEFFEX2"></td>
+                        </tr>
+                        <tr>
+                            <td>Fine Extractor #3</td>
+                            <td id="CFEX3"></td>
+                            <td id="SEFFEX3"></td>
+                            <td id="PEFFEX3"></td>
+                        </tr>
+                        <tr>
+                            <td>Seperator #2</td>
+                            <td id="CSEP2"></td>
+                            <td id="SEFSEP2"></td>
+                            <td id="PEFSEP2"></td>
+                        </tr>
+                        <tr>
+                            <td>Seperator #3</td>
+                            <td id="CSEP3"></td>
+                            <td id="SEFSEP3"></td>
+                            <td id="PEFSEP3"></td>
+                        </tr>
+                        <tr>
+                            <td>Seperator #0</td>
+                            <td id="CSEP0"></td>
+                            <td id="SEFSEP0"></td>
+                            <td id="PEFSEP0"></td>
+                        </tr>
+                        <tr>
+                            <td>Dewatering</td>
+                            <td id="CDEW"></td>
+                            <td id="SEFDEW"></td>
+                            <td id="PEFDEW"></td>
+                        </tr>
+                        <tr>
+                            <td>Drying</td>
+                            <td id="CDRY"></td>
+                            <td id="SEFDRY"></td>
+                            <td id="PEFDRY"></td>
+                        </tr>
+                        <tr>
+                            <td>Packaging</td>
+                            <td id="CPAC"></td>
+                            <td id="SEFPAC"></td>
+                            <td id="PEFPAC"></td>
+                        </tr>
+                        <tr>
+                            <td>Pulp Extractor #1</td>
+                            <td id="CPEX1"></td>
+                            <td id="SEFPEX1"></td>
+                            <td id="PEFPEX1"></td>
+                        </tr>
+                        <tr>
+                            <td>Pulp Extractor #2</td>
+                            <td id="CPEX2"></td>
+                            <td id="SEFPEX2"></td>
+                            <td id="PEFPEX2"></td>
+                        </tr>
+                        <tr>
+                            <td>Pulp Extractor #3</td>
+                            <td id="CPEX3"></td>
+                            <td id="SEFPEX3"></td>
+                            <td id="PEFPEX3"></td>
+                        </tr>
+                        <tr>
+                            <td>Belt Pulp</td>
+                            <td id="CBelt"></td>
+                            <td id="SEFBelt"></td>
+                            <td id="PEFBelt"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+        
+        $("#viewdate").click(function () {
+        
+            //get selected date and save it to date month year parameter which will be use in ajaxs
+            var getdate = $("#datepicker").val();
+            var d = new Date(getdate);
+            var date = d.getDate()
+            var month = d.getMonth();
+            var year = d.getFullYear();
+        
+            //Variables for computing
+            var StarchOut = 0, usedCSR = 0, Yield = 0, StarchInCSR = 0, StarchLossWA = 0, StarchLossP = 0, used = 0, WAGen = 0, ReWA = 0, PeelGen = 0, SandGen = 0, sulfurConsumption = 0, waterConsumption = 0, LowQualityStarch = 0;
+
+            //Variables extraction through drying process performance
+            var countdata = 0
+            //Variable for Starch Efficiency each units
+            var InStarchFine1 = 0, OutStarchFine1 = 0, InStarchFine2 = 0, OutStarchFine2 = 0, InStarchFine3 = 0, OutStarchFine3 = 0,
+                InStarchCEX = 0, OutStarchCEX = 0, InStarchPEX1 = 0, OutStarchPEX1 = 0, InStarchPEX2 = 0, OutStarchPEX2 = 0, InStarchPEX3 = 0, OutStarchPEX3 = 0,
+                InStarchSEP0 = 0, OutStarchSEP0 = 0, InStarchSEP1 = 0, OutStarchSEP1 = 0, InStarchSEP2 = 0, OutStarchSEP2 = 0, InStarchSEP3 = 0, OutStarchSEP3 = 0,
+                InStarchDEW = 0, OutStarchDEW = 0, InStarchDRY = 0, OutStarchDRY = 0, InStarchPAC = 0, OutStarchPAC = 0, InStarchBelt = 0, OutStarchBelt = 0;
+            //Variable for Pulp Extraction Efficiency each units
+            var InPulpCEX = 0, OutPulpCEX = 0, InPulpPEX1 = 0, OutPulpPEX1 = 0, InPulpPEX2 = 0, OutPulpPEX2 = 0, InPulpPEX3 = 0, OutPulpPEX3 = 0, InPulpBelt = 0, OutPulpBelt = 0;
+            //Variable for Capacity max each units
+            var FeedOutFine1 = 0, FeedOutFine2 = 0, FeedOutFine3 = 0, FeedOutCEX = 0, FeedOutPEX1 = 0, FeedOutPEX2 = 0, FeedOutPEX3 = 0,
+                FeedOutSEP0 = 0, FeedOutSEP1 = 0, FeedOutSEP2 = 0, FeedOutSEP3 = 0, FeedOutDEW = 0, FeedOutDRY = 0, FeedOutPAC = 0, FeedOutBelt = 0;
+            //Capacity max each units
+            var maxFeedOutFine1 = 243.38, maxFeedOutFine2 = 214, maxFeedOutFine3 = 62.65, maxFeedOutCEX = 130.157, maxFeedOutPEX1 = 92.58, maxFeedOutPEX2 = 11.02, maxFeedOutPEX3 = 40.68,
+                maxFeedOutSEP0 = 23.3, maxFeedOutSEP1 = 143.18, maxFeedOutSEP2 = 78.28, maxFeedOutSEP3 = 60.328, maxFeedOutDEW = 46.25, maxFeedOutDRY = 16.56, maxFeedOutPAC = 0, maxFeedOutBelt = 0;
+            
+            //get and write data to report (FEX to CEX units)
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Report/ReportUnitData1",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                //pass selected dates variable
+                data: { date: date, month: month+1, year: year},
+                success: function (response) {
+                    countdata = 0;
+                    
+                    $.each(response, function (i, item) {
+                       
+                        //Seperate each data into  the variables
+                        //fine1 unit
+                        if (item.parameter == "PV(FIC-071)") {
+                            countdata += 1;
+                            var x = parseFloat(item.value) * 0.09;
+                            var y = parseFloat(item.value) * 0.19;
+                            InStarchFine1 += x;
+                            InPulpFine1 += y;
+                            FeedOutFine1 += parseFloat(item.value);                        
+                        }
+                        else if (item.parameter == "PV(FIC-072)") {
+                            var x = parseFloat(item.value) * 0.002;
+                            InStarchFine1 += x;                        
+                        }
+                        else if (item.parameter == "SFU07") {
+                            var x = parseFloat(item.value) * 0.0625;
+                            var y = parseFloat(item.value) * 0;
+                            OutStarchFine1 += x;
+                            OutPulpFine1 += y;
+                        
+                        }
+                        //fine2 unit
+                        else if (item.parameter == "PV(FIC-181)") {
+                            var x = parseFloat(item.value) * 0.082;
+                            InStarchFine2 += x;
+                        }
+                        else if (item.parameter == "SFU18") {
+                            var x = parseFloat(item.value) * 0.082;
+                            OutStarchFine2 += x;
+                            FeedOutFine2 += parseFloat(item.value);
+                        }
+                        //fine3 unit
+                        else if (item.parameter == "SIFU16") {
+                            var x = item.value * 0.012;
+                            InStarchFine3 += x;
+                        }
+                        else if (item.parameter == "SFU16") {
+                            var x = parseFloat(item.value) * 0.0118;
+                            OutStarchFine3 += x;
+                            FeedOutFine3 += parseFloat(item.value);
+                        }
+                        //CEX unit
+                        else if (item.parameter == "PV(FIC-051)") {
+                            var x = parseFloat(item.value) * 0.073;
+                            var y = parseFloat(item.value) * 0.257;                        
+                            InStarchCEX += x;
+                            InPulpCEX += y;
+                        }
+                        else if (item.parameter == "PV(FIC-052)") {
+                            var x = parseFloat(item.value) * 0.002;
+                            InStarchCEX += x;
+                        }
+                        else if (item.parameter == "SFU05") {
+                            var x = parseFloat(item.value) * 0.1158;
+                            var y = parseFloat(item.value) * 0.0247;                        
+                            OutStarchCEX += x;
+                            OutPulpCEX += y;
+                            FeedOutCEX += parseFloat(item.value);
+                        }
+                        //PEX1 unit
+                        else if (item.parameter == "PV(FIC-091)") {
+                            var x = parseFloat(item.value) * 0.006;
+                            var y = parseFloat(item.value) * 0.249;
+                            InStarchPEX1 += x;
+                            InPulpPEX1 += y;     
+                        }
+                        else if (item.parameter == "WAFU09") {
+                            var x = item.value * 0.002;
+                            InStarchPEX1 += x;                            
+                        }
+                        else if (item.parameter == "SFU09") {
+                            var x = parseFloat(item.value) * 0.0089;
+                            var y = parseFloat(item.value) * 0.45;
+                            OutStarchPEX1 += x;
+                            OutPulpPEX1 += y;
+                            FeedOutPEX1 += parseFloat(item.value);
+                        }
+                        //PEX2 unit
+                        else if (item.parameter == "PV(FIC-111)") {
+                            var x = parseFloat(item.value) * 0.00643;
+                            var y = parseFloat(item.value) * 0.289;
+                            InStarchPEX2 += x;
+                            InPulpPEX2 += y;
+                        }
+                        else if (item.parameter == "WAFU11") {
+                            var x = item.value * 0.002;
+                            InStarchPEX2 += x;
+                        }
+                        else if (item.parameter == "SFU11") {
+                            var x = parseFloat(item.value) * 0.0078;
+                            var y = parseFloat(item.value) * 0.364;
+                            OutStarchPEX2 += x;
+                            OutPulpPEX2 += y;
+                            FeedOutPEX2 += parseFloat(item.value);
+                        }
+                        //PEX3 unit
+                        else if (item.parameter == "PIFU12") {
+                            var x = parseFloat(item.value) * 0.0078;
+                            var y = parseFloat(item.value) * 0.364;
+                            InStarchPEX3 += x;
+                            InPulpPEX3 += y;
+                        }
+                        else if (item.parameter == "SFU12") {
+                            var x = parseFloat(item.value) * 0.015;
+                            var y = parseFloat(item.value) * 0.9;
+                            OutStarchPEX3 += x;
+                            OutPulpPEX3 += y;
+                            FeedOutPEX3 += parseFloat(item.value);
+                        }                      
+                    });      
+                
+                    //Extraction through drying process performance adding data to table
+                    $("#SEFCEX").html(StarchEff(OutStarchCEX, InStarchCEX));
+                    $("#PEFCEX").html(PulpEff(OutPulpCEX, InPulpCEX));
+                    $("#CCEX").html(UnitCapacity(FeedOutCEX, maxFeedOutCEX,countdata));
+
+                    $("#SEFFEX1").html(StarchEff(OutStarchFine1, InStarchFine1));
+                    $("#PEFFEX1").html("-");
+                    $("#CFEX1").html(UnitCapacity(FeedOutFine1, maxFeedOutFine1, countdata));
+
+                    $("#SEFFEX2").html(StarchEff(OutStarchFine2, InStarchFine2));
+                    $("#PEFFEX2").html("-");
+                    $("#CFEX2").html(UnitCapacity(FeedOutFine2, maxFeedOutFine2, countdata));
+
+                    $("#SEFFEX3").html(StarchEff(OutStarchFine3, InStarchFine3));
+                    $("#PEFFEX3").html("-");
+                    $("#CFEX3").html(UnitCapacity(FeedOutFine3, maxFeedOutFine3, countdata));
+                    
+                    $("#SEFPEX1").html(StarchEff(OutStarchPEX1, InStarchPEX1));
+                    $("#PEFPEX1").html(PulpEff(OutPulpPEX1, InPulpPEX1));
+                    $("#CPEX1").html(UnitCapacity(FeedOutPEX1, maxFeedOutPEX1, countdata));
+
+                    $("#SEFPEX2").html(StarchEff(OutStarchPEX2, InStarchPEX2));
+                    $("#PEFPEX2").html(PulpEff(OutPulpPEX2, InPulpPEX2));
+                    $("#CPEX2").html(UnitCapacity(FeedOutPEX2, maxFeedOutPEX2, countdata));
+
+                    $("#SEFPEX3").html(StarchEff(OutStarchPEX3, InStarchPEX3));
+                    $("#PEFPEX3").html(PulpEff(OutPulpPEX3, InPulpPEX3));
+                    $("#CPEX3").html(UnitCapacity(FeedOutPEX3, maxFeedOutPEX3, countdata));
+                               
+                } 
+            });
+
+            //get and write data to report (Belt to SEP units)
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Report/ReportUnitData2",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                //pass selected dates variable
+                data: { date: date, month: month + 1, year: year },
+                success: function (response) {
+                    countdata = 0;
+                    $.each(response, function (i, item) {
+                        
+                        //Seperate each data into  the variables
+                        //SEP0 unit
+                        if (item.parameter == "SFU21") {
+                            var x = parseFloat(item.value) * 0.004;
+                            countdata += 1;
+                            OutStarchSEP0 += x;
+                            FeedOutSEP0 += parseFloat(item.value);
+                        }
+                        else if (item.parameter == "WAIFU21") {
+                            var x = item.value * 0.0023;
+                            InStarchSEP0 += x;
+                        }
+                        //SEP1 unit
+                        else if (item.parameter == "PV(FIC-151)") {
+                            var x = parseFloat(item.value) * 0.052;
+                            InStarchSEP1 += x;
+                        }
+                        else if (item.parameter == "SLFU15") {
+                            var x = parseFloat(item.value) * 0.1;
+                            OutStarchSEP1 += x;
+                            FeedOutSEP1 += parseFloat(item.value);
+                        }
+                        //SEP2 unit
+                        else if (item.parameter == "PV(FIC-201)") {
+                            var x = parseFloat(item.value) * 0.08;
+                            InStarchSEP2 += x;
+                        }
+                        else if (item.parameter == "SFU20") {
+                            var x = parseFloat(item.value) * 0.219;
+                            OutStarchSEP2 += x;
+                            FeedOutSEP2 += parseFloat(item.value);
+                        }
+                        //SEP3 unit
+                        else if (item.parameter == "PV(FIC-231)") {
+                            var x = parseFloat(item.value) * 0.2263;
+                            InStarchSEP3 += x;
+                        }
+                        else if (item.parameter == "SFU23") {
+                            var x = parseFloat(item.value) * 0.3;
+                            OutStarchSEP3 += x;
+                            FeedOutSEP3 += parseFloat(item.value);
+                        }
+                        //Belt Pulp unit
+                        else if (item.parameter == "CEX04INU12") {
+                            InStarchBelt += parseFloat(item.value) * 0.0153;
+                            InPulpBelt += parseFloat(item.value) * 0.9;
+                        }
+                        else if (item.parameter == "POFU12") {
+                            StarchLossP += parseFloat(item.value) / 60 * 0.0158;
+                            OutStarchBelt += parseFloat(item.value) * 0.0158;
+                            OutPulpBelt += parseFloat(item.value) * 0.98;
+                            FeedOutBelt += parseFloat(item.value);
+                        }
+                    });
+                
+                    //Extraction through drying process performance adding data to table       
+                    $("#SEFBelt").html(StarchEff(OutStarchBelt, InStarchBelt));
+                    $("#PEFBelt").html(PulpEff(OutPulpBelt, InPulpBelt));
+                    $("#CBelt").html(UnitCapacity(FeedOutBelt, maxFeedOutBelt, countdata));
+
+                    $("#SEFSEP0").html(StarchEff(OutStarchSEP0, InStarchSEP0));
+                    $("#PEFSEP0").html("-");
+                    $("#CSEP0").html(UnitCapacity(FeedOutSEP0, maxFeedOutSEP0, countdata));
+
+                    $("#SEFSEP1").html(StarchEff(OutStarchSEP1, InStarchSEP1));
+                    $("#PEFSEP1").html("-");
+                    $("#CSEP1").html(UnitCapacity(FeedOutSEP1, maxFeedOutSEP1, countdata));
+
+                    $("#SEFSEP2").html(StarchEff(OutStarchSEP2, InStarchSEP2));
+                    $("#PEFSEP2").html("-");
+                    $("#CSEP2").html(UnitCapacity(FeedOutSEP2, maxFeedOutSEP2, countdata));
+
+                    $("#SEFSEP3").html(StarchEff(OutStarchSEP3, InStarchSEP3));
+                    $("#PEFSEP3").html("-");
+                    $("#CSEP3").html(UnitCapacity(FeedOutSEP3, maxFeedOutSEP3, countdata));
+
+                
+                }
+            });
+
+            //get and write data to report (Belt to SEP units)
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Report/ReportUnitData3",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                //pass selected date variable
+                data: { date: date, month: month + 1, year: year },
+                success: function (response) {                
+                    countdata = 0;
+                    $.each(response, function (i, item) {
+
+                        //Seperate each data into  the variables
+                        //Dewatering unit
+                        if (item.parameter == "PV(FIC-251)") {
+                            var x = parseFloat(item.value) * 0.3;
+                            countdata += 1;
+                            InStarchDEW += x;
+                        }
+                        else if (item.parameter == "SFU25") {
+                            var x = parseFloat(item.value) * 0.31;
+                            OutStarchDEW += x;
+                            FeedOutDEW += parseFloat(item.value);
+                        }
+                        //Drying unit
+                        else if (item.parameter == "SIFU26") {
+                            var x = parseFloat(item.value) * 0.315;
+                            InStarchDRY += x;
+                        }
+                        else if (item.parameter == "SFU26") {
+                            var x = parseFloat(item.value) * 0.88;
+                            OutStarchDRY += x;
+                            FeedOutDRY += parseFloat(item.value);
+                        }
+                        //Packaging unit
+                        else if (item.parameter == "CPIFU29") {
+                            var x = parseFloat(item.value) * 0.3;
+                            InStarcPAC += x;
+                        }
+                        else if (item.parameter == "CPFU29") {
+                            var x = parseFloat(item.value);
+                            OutStarchPAC += x;
+                            FeedOutPAC += parseFloat(item.value);
+                            StarchOut += parseFloat(item.value) / 60;
+                        }
+                        else if (item.parameter == "CPOFU29") {
+                            LowQualityStarch += parseFloat(item.value) / 60;
+                        }
+
+                        //Variables for computing Starch amounts and Material Preparation comput in ton (from ton/hr to ton, need to be devided by 60)
+
+                        else if (item.parameter == "CIFU01") {
+                            used = parseFloat(item.value) / 60;
+                            usedCSR += used;
+                            StarchInCSR += (used * 0.239);
+                        }
+                        else if (item.parameter == "WAFU02") {
+                            WAGen += parseFloat(item.value) / 60;
+                            StarchLossWA += parseFloat(item.value) / 60 * 0.09 / 82.874;
+                        }
+                        else if (item.parameter == "W2FEXU02") {
+                            ReWA += parseFloat(item.value) / 60;
+                        }
+                        else if (item.parameter == "SOFU01") {
+                            PeelGen += parseFloat(item.value) / 60 * 0.12 / 1.86;
+                            SandGen += parseFloat(item.value) / 60 * 1.74 / 1.86;
+                        }
+                        //Variable for computing Consumptions
+                        else if (item.parameter == "SUFU8") {
+                            sulfurConsumption += parseFloat(item.value/60);
+                        }
+                        else if (item.parameter == "WFU12" || item.parameter == "PV(FIC-152)" || item.parameter == "WFU22" || item.parameter == "WIFU20") {
+                            waterConsumption += parseFloat(item.value/60);
+                        }
+                    });
+                
+                    Yield = StarchOut / StarchInCSR * 100;
+
+                    //Adding data for computing summary 
+                    $("#USEDCSRsum").html(usedCSR.toFixed(2));
+                    $("#SINsum").html(StarchInCSR.toFixed(2));
+                    $("#SOUTsum").html(StarchOut.toFixed(2));
+                    $("#SYsum").html(Yield.toFixed(2));
+
+                    //Adding data for Production >> Material Consumption
+                    $("#sulfurConsumption").html(sulfurConsumption.toFixed(2));
+                    $("#waterConsumption").html(waterConsumption.toFixed(2));
+
+                    //Adding data for Production >> Starch production
+                    $("#SPstarchin").html(StarchInCSR.toFixed(2));
+                    $("#SPstarchout").html(StarchOut.toFixed(2));
+                    $("#SPstarchlossWA").html(StarchLossWA.toFixed(2));
+                    $("#SPstarchlossP").html(StarchLossP.toFixed(2));
+                    $("#SPstarchlowquality").html(LowQualityStarch.toFixed(2));
+
+                    //Adding data for Production Monitoring  >> Material Preparation
+                    $("#USEDCSRmp").html(usedCSR.toFixed(2));
+                    $("#WAGen").html(WAGen.toFixed(2));
+                    $("#StarchLossWA").html(StarchLossWA.toFixed(2));
+                    $("#ReWA").html(ReWA.toFixed(2));
+                    $("#PeelGen").html(PeelGen.toFixed(2));
+                    $("#SandGen").html(SandGen.toFixed(2));
+
+                    //Extraction through drying process performance adding data to table                
+
+                    $("#SEFDEW").html(StarchEff(OutStarchDEW, InStarchDEW));
+                    $("#PEFDEW").html("-");
+                    $("#CDEW").html(UnitCapacity(FeedOutDEW, maxFeedOutDEW, countdata));
+
+                    $("#SEFDRY").html(StarchEff(OutStarchDRY, InStarchDRY));
+                    $("#PEFDRY").html("-");
+                    $("#CDRY").html(UnitCapacity(FeedOutDRY, maxFeedOutDRY, countdata));
+
+                    $("#SEFPAC").html(StarchEff(OutStarchPAC, InStarchPAC));
+                    $("#PEFPAC").html("-");
+                    $("#CPAC").html(UnitCapacity(FeedOutPAC, maxFeedOutPAC, countdata));
+
+                    //highchart library for starch pproduction pie chart
+                    $(function () {
+                        $('#container').highcharts({
+                            chart: {
+                                plotBackgroundColor: null,
+                                plotBorderWidth: null,
+                                plotShadow: false
+                            },
+                            title: {
+                                text: 'Starch Production'
+                            },
+                            tooltip: {
+                                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+                            },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                        style: {
+                                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                                        }
+                                    }
+                                }
+                            },
+                            series: [{
+                                type: 'pie',
+                                name: 'Percentof Starch',
+                                data: [
+                                    ['Produced', StarchOut],
+                                    ['Loss at Waste Water', StarchLossWA],
+                                    ['Loss at Pulp', StarchLossP],
+                                    ['Low quality', 6.2]
+                                ]
+                            }]
+                        });
+                    });
+                }
+            });
+
+            //get and write data for starch quality table in the selected date
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Report/GetStarchQuality",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                data: { date: date, month: month + 1, year: year },
+                success: function (response) {
+                    $("#QualityTable tbody tr").remove();
+                    $.each(response, function (i, item) {
+                        
+                        var Getdate = ToJavaScriptDate(item.AddTime);
+                        var GETPH = item.PH;
+                        var GETWhiteness = item.Whiteness;
+                        var GETViscosity = item.Viscosity;
+                        var GETSulfurResidue = item.SulfurResidue;
+                        $('#QualityTable tbody:first').append('<tr><td>' + Getdate + '</td><td>' + GETPH + '</td><td>' + GETWhiteness + '</td><td>' + GETViscosity + '</td><td>' + GETSulfurResidue + '</td></tr>');
+                        
+                    });
+                    
+                }
+            });
+        });
+
+        //Change date from linq to java
+        function ToJavaScriptDate(value) {
+            var pattern = /Date\(([^)]+)\)/;
+            var results = pattern.exec(value);
+            var dt = new Date(parseFloat(results[1]));
+            return (dt.getMonth() + 1) + "/" + dt.getDate() + "/" + dt.getFullYear() + " " + dt.getHours() + ":" + dt.getMinutes();
+        }
+        
+        //Compute starch efficiency (input1 is (main) feed output of  starch, input2 is feed total starch in.)
+        function StarchEff(input1, input2) {
+            return (input1 / input2 * 100).toFixed(2);
+        }
+        //Compute pulp extraction efficiency (input1 is (main) feed output of  pulp, input2 is feed total pulp in.)
+        function PulpEff(input1, input2) {
+            return ((1 - (input1 / input2)) * 100).toFixed(2);
+        }
+        //Compute capacityof unit (input1 is (main) total feed output, input2 is max feed out, count is the number of data)
+        function UnitCapacity(input1, input2, count) {
+            return (input1 / (input2*count) * 100).toFixed(2);
+        }
+        
+        
+    });
+</script>

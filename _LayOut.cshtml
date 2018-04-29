@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Starch Production Monitoring</title>
+    <link href="~/Contents/BootStrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Contents/NavFixed.css" rel="stylesheet" />
+    <link href="~/Contents/dashboard.css" rel="stylesheet" />
+    <link href="~/Contents/StyleSheet.css" rel="stylesheet" />
+</head>
+<body>
+    <div >
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">Starch Production Monitorin Project</a>
+                    @*<a class="navbar-brand" id="getdate"></a>*@
+                </div>
+                <div id="navbar" class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>@Html.ActionLink("Home", "Index", "Index")</li>
+                        <li>@Html.ActionLink("Dashboard","DashBoard","Index")</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li>@Html.ActionLink("Owner", "Owner", "Report")</li>
+                                <li>@Html.ActionLink("Plant Manager", "PlantManager", "Report")</li>
+                                
+
+                            </ul>
+                        </li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Filling Forms <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                @*<li>@Html.ActionLink("Cassava Purchased", "CassavaForm", "FillingForm")</li>*@
+                                <li>@Html.ActionLink("Starch Quality", "StarchQualityForm", "FillingForm")</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    
+                </div><!--/.nav-collapse -->
+                
+            </div>
+        </nav>
+    </div>
+    <script src="~/Contents/jquery-1.11.1.min.js"></script>
+    <script src="~/Contents/BootStrap/js/bootstrap.min.js"></script>
+    <script src="~/Contents/HighChart/highcharts.js"></script>
+    <script src="~/Contents/HighChart/Modules/exporting.js"></script>
+    <div style="min-height: 650px;" class="container-fluid">
+        @RenderBody()
+    </div>
+    
+</body>
+
+</html>
+@*<script type="text/javascript">
+    $(document).ready(function () {
+
+        setInterval(function () {
+            var date = new Date();
+            $("#getdate").html(date.toLocaleDateString() + " " + date.toLocaleTimeString());
+        }, 1000);
+    });
+</script>*@

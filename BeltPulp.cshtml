@@ -1,0 +1,375 @@
+﻿@{
+    ViewBag.Title = "BeltPulp"; Layout = "~/Views/Shared/Monitor.cshtml";
+}
+
+<h3 class="sub-header">BeltPulp Unit</h3>
+<div>
+    <div class="panel-body">
+        <div>
+            <p id="trial"></p>
+            <div id="ShowGraph" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+        Feed In
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">Feed from Pulp Extractor 3</h5>
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="sum-head">Starch</td>
+                                    <td id="BeltIn1Starch" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Water</td>
+                                    <td id="BeltIn1Water" class="sum-value"></td>
+                                    <td class="sum-unit">m^3</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Pulp</td>
+                                    <td id="BeltIn1Pulp" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">Fresh Water</h5>
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="sum-head">Water</td>
+                                    <td id="BeltIn2Water" class="sum-value"></td>
+                                    <td class="sum-unit">m^3</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        Feed Out
+        <div class="row">
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">Pulp Feed Out</h5>
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="sum-head">Starch</td>
+                                    <td id="BeltOut1Starch" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Pulp</td>
+                                    <td id="BeltOut1Pulp" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-info">
+                    <div class="panel-heading">
+                        <h5 class="panel-title">Waste Water Feed Out</h5>
+                    </div>
+                    <div class="panel-body">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="sum-head">Starch</td>
+                                    <td id="BeltOut2Starch" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Water</td>
+                                    <td id="BeltOut2Water" class="sum-value"></td>
+                                    <td class="sum-unit">m^3</td>
+                                </tr>
+                                <tr>
+                                    <td class="sum-head">Pulp</td>
+                                    <td id="BeltOut2Pulp" class="sum-value"></td>
+                                    <td class="sum-unit">Ton</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        var starchIn1 = [];
+        var starchOut1 = [];
+        var starchOut2 = [];
+
+        var gettimeIn1 = "";
+        var getStarchIn1 = "";
+        var gettime1 = "";
+        var gettime2 = "";
+        var getStarch1 = "";
+        var getStarch2 = "";
+        var CurrentDate = "";
+
+
+        $.ajax({
+            async: true,
+            cach: false,
+            url: "/Index/DataBeltPulpHistory",
+            Type: "GET",
+            datatype: "json",
+            contentType: "applicationType/json",
+            success: function (response) {
+
+                var date, month, year, hour;
+                $.each(response, function (i, item) {
+
+                    var datetime = new Date(parseInt(item.gettime.substr(6)));
+                    var d = new Date(datetime);
+                    var newdate = Date.parse(datetime);
+                    date = d.getDate();
+                    month = d.getMonth();
+                    year = d.getFullYear();
+                    var data = item.value;
+                    hour = d.getHours();
+
+                    if (item.parameter == "POFU12") {
+                        if (CurrentDate == "") {
+                            CurrentDate = newdate;
+                        }
+                        data = data * 0.0158;
+                        starchOut1.push([newdate, data]);
+                    }
+                    else if (item.parameter == "WAFU12") {
+                        data = data * 0.0078;
+                        starchOut2.push([newdate, data]);
+                    }
+                    else if (item.parameter == "CEX04INU12") {
+                        data = data * 0.0153;
+                        starchIn1.push([newdate, data]);
+                    }
+                });
+
+                Highcharts.setOptions({
+                    global: {
+                        useUTC: false
+                    }
+                });
+
+                $(function () {
+
+                    $('#ShowGraph').highcharts({
+                        chart: {
+                            //type: 'spline',
+                            events: {
+                                load: function () {
+                                    // find the clicked values and the series
+                                    var series1 = this.series[0],
+                                        series2 = this.series[1],
+                                        series3 = this.series[2];
+                                    setInterval(function () {
+
+
+                                        callData();
+
+                                        var x1 = gettime1,
+                                            x2 = gettime2,
+                                            x3 = gettimeIn1,
+
+
+                                            y1 = getStarch1,
+                                            y2 = getStarch2,
+                                            y3 = getStarchIn1;
+
+
+
+                                        series1.addPoint([x1, y1]);
+                                        series2.addPoint([x2, y2]);
+                                        series3.addPoint([x3, y3]);
+
+                                    }, 60000);
+
+
+                                }
+                            }
+                        },
+
+                        title: {
+                            text: 'Performance Monitoring'
+                        },
+                        subtitle: {
+                            text: 'Pulp Extractor #3 Unit'
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            dateTimeLabelFormats: {
+                                second: '%H:%M',
+                                minute: '%H:%M',
+                                hour: '%H:%M',
+                                day: '%H:%M',
+                                week: '%H:%M',
+                                month: '%H:%M',
+                                year: '%H:%M'
+
+
+                            },
+                            title: {
+                                text: 'Time'
+                            },
+                            min: Date.UTC(year, month, date, hour - 7, 0),
+                            max: Date.UTC(year, month, date, hour + 1, 0),
+                            tickInterval: 3600 * 1000
+
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'Starch Amount (Ton)'
+                            },
+                            min: 0
+                        },
+                        tooltip: {
+                            headerFormat: '<b>{series.name}</b><br>',
+                            pointFormat: '{point.x:%e %b %Y %H:%M}: {point.y:.2f} m'
+                        },
+
+                        plotOptions: {
+                            spline: {
+                                marker: {
+                                    enabled: true
+                                }
+                            }
+                        },
+
+
+                        series: [, {
+                            name: 'Starch In 1',
+                            data: starchIn1,
+                            pointStart: CurrentDate
+
+                        },
+                        {
+                            name: 'Starch Out 1',
+                            data: starchOut1,
+                            pointStart: CurrentDate
+
+                        }
+                        , {
+                            name: 'Starch Out 2',
+                            data: starchOut2,
+                            pointStart: CurrentDate
+
+                        }
+                        ]
+                    });
+
+
+                });
+
+            }
+
+
+        });
+
+        get();
+        setInterval(function () {
+            get();
+        }, 60000);
+
+        function callData() {
+
+            $.ajax({
+                async: false,
+                cach: false,
+                url: "/Index/DataBeltPulp",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                success: function (response) {
+                    $.each(response, function (i, item) {
+                        var datetime2 = new Date(parseInt(item.gettime.substr(6)));
+                        var newdate2 = Date.parse(datetime2);
+                        var data2 = item.value;
+
+                        if (item.parameter == "POFU12") {
+                            data2 = data2 * 0.0158;
+                            gettime1 = newdate2;
+                            getStarch1 = data2;
+                        }
+                        else if (item.parameter == "WAFU12") {
+                            data2 = data2 * 0.0078;
+                            gettime2 = newdate2;
+                            getStarch2 = data2;
+
+                        }
+                        else if (item.parameter == "CEX04INU12") {
+                            data2 = data2 * 0.0153;
+                            gettimeIn1 = newdate2;
+                            getStarchIn1 = data2;
+                        }
+                    });
+                }
+            });
+        }
+
+        function get() {
+
+            $.ajax({
+                async: true,
+                cach: false,
+                url: "/Index/DataBeltPulp",
+                Type: "GET",
+                datatype: "json",
+                contentType: "applicationType/json",
+                data: { valueS: "Hello" },
+                success: function (response) {
+                    $.each(response, function (i, item) {
+
+
+                        if (item.parameter == "CEX04INU12") {
+                            $("#BeltIn1Starch").html((item.value * 0.0153).toFixed(2));
+                            $("#BeltIn1Water").html((item.value * 0.0776).toFixed(2));
+                            $("#BeltIn1Pulp").html((item.value * 0.9).toFixed(2));
+                        }
+                        else if (item.parameter == "POFU12") {
+                            $("#BeltOut1Starch").html((item.value * 0.0158).toFixed(2));
+                            $("#BeltOut1Pulp").html((item.value * 0.98).toFixed(2));
+                        }
+                        else if (item.parameter == "WAFU12") {
+                            $("#BeltOut2Starch").html((item.value * 0.007825).toFixed(2));
+                            $("#BeltOut2Water").html((item.value * 0.628045).toFixed(2));
+                            $("#BeltOut2Pulp").html((item.value * 0.36404).toFixed(2));
+                        }
+                        //else if (item.parameter == "") $("#Pulp3In2Water").html(item.value.toFixed(2));
+                    });
+                }
+
+
+            });
+        }
+
+    });
+</script>
+
+

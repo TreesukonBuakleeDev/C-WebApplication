@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Monitor";
+    Layout = "~/Views/Shared/_LayOut.cshtml";
+}
+
+
+
+<div class="container">  
+    
+
+    <div class="col-sm-3 col-md-2 sidebar">
+        <ul class="nav nav-sidebar">
+            <li>@Html.ActionLink("Material Preparations", "MaterialPreparations", "Index")</li>
+            <li><a data-toggle="collapse" href="#collapseUnit" aria-expanded="false" aria-controls="collapseUnit">Extraction and Drying Process <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span></a></li>
+        </ul>
+        <ul class="nav nav-sidebar collapse" id="collapseUnit">
+            <li>@Html.ActionLink("Coarse Extractor", "CoarseExtractor", "Index")</li>
+            <li>@Html.ActionLink("Fine Extractor #1", "FineExtractor1", "Index")</li>
+            <li>@Html.ActionLink("Separator #1", "Seperator1", "Index")</li>
+            <li>@Html.ActionLink("Fine Extractor #2", "FineExtractor2", "Index")</li>
+            <li>@Html.ActionLink("Fine Extractor #3", "FineExtractor3", "Index")</li>
+            <li>@Html.ActionLink("Separator #2", "Seperator2", "Index")</li>
+            <li>@Html.ActionLink("Separator #3", "Seperator3", "Index")</li>
+            <li>@Html.ActionLink("Separator #0", "Seperator0", "Index")</li>
+            <li>@Html.ActionLink("Dewatering", "Dewatering", "Index")</li>
+            <li>@Html.ActionLink("Drying", "Drying", "Index")</li>
+            <li>@Html.ActionLink("Packaging", "Packaging", "Index")</li>
+            <li>@Html.ActionLink("Pulp Extractor #1", "PulpExtractor1", "Index")</li>
+            <li>@Html.ActionLink("Pulp Extractor #2", "PulpExtractor2", "Index")</li>
+            <li>@Html.ActionLink("Pulp Extractor #3", "PulpExtractor3", "Index")</li>
+            <li>@Html.ActionLink("Belt Pulp", "BeltPulp", "Index")</li>
+        </ul>
+    </div>
+
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">       
+                
+        <!-- Monitoring -->
+        
+        
+        <div class="container-fluid">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+   
